@@ -1,6 +1,5 @@
 ---
 title: xplain — AI-Powered CLI to Explain Code, Commands & Errors
-published: false
 tags: devchallenge, githubchallenge, cli, githubcopilot
 ---
 
