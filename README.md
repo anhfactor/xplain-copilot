@@ -210,6 +210,12 @@ xplain wtf --lang vi
 
 This reads your shell history, re-runs the last command, captures the error, and explains what went wrong with a fix.
 
+```bash
+# JSON output for programmatic use
+xplain wtf --json
+xplain wtf --json | jq '.explanation'
+```
+
 ### TL;DR Mode
 
 ```bash

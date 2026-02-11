@@ -1,5 +1,6 @@
 """WTF command — explain the last failed command from shell history."""
 
+import json
 import os
 import subprocess
 import typer
@@ -83,6 +84,23 @@ def _get_last_command() -> Optional[str]:
     return _get_last_command_zsh()
 
 
+def _format_as_json(
+    explanation: str,
+    command: str,
+    exit_code: int,
+    language: str,
+) -> str:
+    """Format wtf explanation as JSON for stdout."""
+    data = {
+        "type": "wtf_explanation",
+        "command": command,
+        "exit_code": exit_code,
+        "language": language,
+        "explanation": explanation,
+    }
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
+
 def wtf_cmd(
     lang: Annotated[
         Optional[str],
@@ -91,6 +109,10 @@ def wtf_cmd(
     verbose: Annotated[
         bool,
         typer.Option("--verbose", "-v", help="Show verbose output")
+    ] = False,
+    json_output: Annotated[
+        bool,
+        typer.Option("--json", help="Output explanation as JSON to stdout")
     ] = False,
 ):
     """
@@ -162,11 +184,14 @@ def wtf_cmd(
             with LoadingSpinner(f"Analyzing command {format_language_flag(output_lang)}..."):
                 explanation = explain_command(last_cmd, LANGUAGE_NAMES[output_lang])
 
-            print_explanation(
-                explanation,
-                title="Command Explanation",
-                subtitle=f"{format_language_flag(output_lang)} {LANGUAGE_NAMES[output_lang]}"
-            )
+            if json_output:
+                console.print(_format_as_json(explanation, last_cmd, 0, output_lang))
+            else:
+                print_explanation(
+                    explanation,
+                    title="Command Explanation",
+                    subtitle=f"{format_language_flag(output_lang)} {LANGUAGE_NAMES[output_lang]}"
+                )
             history_store.add("wtf", last_cmd, explanation, language=output_lang)
         except CopilotCLIError as e:
             print_error(str(e), title="Backend Error")
@@ -198,11 +223,14 @@ Please provide:
 Language: Respond in {LANGUAGE_NAMES[output_lang]}"""
             explanation = ask_copilot(prompt)
 
-        print_explanation(
-            explanation,
-            title="WTF — What The Failure",
-            subtitle=f"{format_language_flag(output_lang)} {LANGUAGE_NAMES[output_lang]}"
-        )
+        if json_output:
+            console.print(_format_as_json(explanation, last_cmd, exit_code, output_lang))
+        else:
+            print_explanation(
+                explanation,
+                title="WTF — What The Failure",
+                subtitle=f"{format_language_flag(output_lang)} {LANGUAGE_NAMES[output_lang]}"
+            )
 
         history_store.add("wtf", f"{last_cmd} (exit {exit_code})", explanation, language=output_lang)
 

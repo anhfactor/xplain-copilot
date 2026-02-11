@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>xplain walkthrough</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0d1117; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+  .term {
+    width:900px; background:#0d1117; border-radius:12px; overflow:hidden;
+    border:1px solid #30363d; box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+  .bar {
+    background:#161b22; padding:10px 16px; display:flex; align-items:center; gap:8px;
+    border-bottom:1px solid #30363d;
+  }
+  .dot { width:12px; height:12px; border-radius:50%; }
+  .dr { background:#ff5f57; } .dy { background:#febc2e; } .dg { background:#28c840; }
+  .bar span { color:#8b949e; font:12px 'JetBrains Mono',monospace; margin-left:12px; }
+  .body { padding:20px 24px; font:13.5px/1.8 'JetBrains Mono',monospace; min-height:560px; }
+  .line { white-space:pre; opacity:0; transform:translateY(3px); transition:opacity .3s, transform .3s; }
+  .line.show { opacity:1; transform:translateY(0); }
+  .p { color:#3fb950; } .c { color:#79c0ff; } .a { color:#ffa657; }
+  .s { color:#a5d6a7; } .f { color:#d2a8ff; } .cm { color:#484f58; font-style:italic; }
+  .o { color:#c9d1d9; } .d { color:#8b949e; } .h { color:#58a6ff; }
+  .e { color:#ff7b72; } .g { color:#3fb950; font-weight:bold; }
+  .w { color:#d29922; } .b { color:#79c0ff; font-weight:bold; }
+  .blank { height:10px; }
+  .section { display:none; }
+  .section.active { display:block; }
+  .nav { display:flex; gap:8px; padding:8px 24px; background:#161b22; border-top:1px solid #30363d; }
+  .nav-dot { width:8px; height:8px; border-radius:50%; background:#30363d; cursor:pointer; transition:background .3s; }
+  .nav-dot.active { background:#58a6ff; }
+  .label { color:#58a6ff; font:11px 'JetBrains Mono',monospace; margin-left:auto; }
+</style>
+</head>
+<body>
+<div class="term">
+  <div class="bar">
+    <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+    <span>~/projects — xplain walkthrough</span>
+  </div>
+  <div class="body" id="t"></div>
+  <div class="nav" id="nav"></div>
+</div>
+<script>
+const sections = [
+  {
+    title: "1/6 — Explain Commands",
+    lines: [
+      {t:'<span class="cm"># 🔍 Explain shell commands in any language</span>', d:500},
+      {t:'<span class="p">$ </span><span class="c">xplain cmd</span><span class="s"> "git rebase -i HEAD~3 --autosquash"</span><span class="f"> --lang vi</span>', d:80},
+      {t:'', d:300, blank:true},
+      {t:'<span class="d">🇻🇳 Analyzing command...</span>', d:800},
+      {t:'<span class="g">✓ git rebase -i HEAD~3 --autosquash</span>', d:400},
+      {t:'<span class="o">  Lệnh này khởi động interactive rebase cho 3 commit gần nhất.</span>', d:60},
+      {t:'<span class="o">  • <span class="b">-i</span>: Chế độ tương tác — sắp xếp, squash, edit commit</span>', d:60},
+      {t:'<span class="o">  • <span class="b">HEAD~3</span>: 3 commit gần nhất từ HEAD</span>', d:60},
+      {t:'<span class="o">  • <span class="b">--autosquash</span>: Tự động sắp xếp fixup!/squash! commits</span>', d:60},
+      {t:'', d:300, blank:true},
+      {t:'<span class="d">📁 Saved to history · 10+ languages supported</span>', d:0},
+    ]
+  },
+  {
+    title: "2/6 — WTF Mode",
+    lines: [
+      {t:'<span class="cm"># 🤯 Something failed? Just type: xplain wtf</span>', d:500},
+      {t:'<span class="p">$ </span><span class="a">git push origin main</span>', d:80},
+      {t:'<span class="e">error: failed to push some refs to \'origin\'</span>', d:400},
+      {t:'<span class="e">hint: Updates were rejected because the remote contains work</span>', d:60},
+      {t:'', d:400, blank:true},
+      {t:'<span class="p">$ </span><span class="c">xplain wtf</span>', d:80},
+      {t:'<span class="w">🤔 Last command: git push origin main</span>', d:600},
+      {t:'<span class="d">Re-running command to capture output...</span>', d:600},
+      {t:'<span class="e">✗ Exit code 1</span>', d:400},
+      {t:'', d:200, blank:true},
+      {t:'<span class="o">  Remote has commits you don\'t have locally.</span>', d:60},
+      {t:'<span class="o">  <span class="g">Fix:</span> git pull --rebase origin main && git push</span>', d:60},
+      {t:'', d:300, blank:true},
+      {t:'<span class="d">Also supports: xplain wtf --json | jq</span>', d:0},
+    ]
+  },
+  {
+    title: "3/6 — TL;DR Mode",
+    lines: [
+      {t:'<span class="cm"># ⚡ One-line explanations with --tldr</span>', d:500},
+      {t:'<span class="p">$ </span><span class="c">xplain</span><span class="f"> --tldr</span><span class="c"> cmd</span><span class="s"> "find . -name \'*.py\' -exec grep -l TODO {} +"</span>', d:80},
+      {t:'<span class="o">  Finds all .py files containing "TODO" and lists their paths.</span>', d:60},
+      {t:'', d:500, blank:true},
+      {t:'<span class="p">$ </span><span class="c">xplain</span><span class="f"> --tldr</span><span class="c"> error</span><span class="s"> "ECONNREFUSED 127.0.0.1:5432"</span>', d:80},
+      {t:'<span class="o">  PostgreSQL isn\'t running on port 5432; start it or check the port.</span>', d:60},
+      {t:'', d:500, blank:true},
+      {t:'<span class="p">$ </span><span class="c">xplain</span><span class="f"> --tldr</span><span class="c"> diff</span><span class="a"> HEAD~1</span>', d:80},
+      {t:'<span class="o">  Refactored auth to use JWT tokens instead of sessions.</span>', d:60},
+      {t:'', d:300, blank:true},
+      {t:'<span class="d">Works with all commands · Perfect for quick lookups</span>', d:0},
+    ]
+  },
+  {
+    title: "4/6 — Smart Pipe",
+    lines: [
+      {t:'<span class="cm"># 🔗 Pipe any output — auto-detects errors, code, or logs</span>', d:500},
+      {t:'<span class="p">$ </span><span class="a">npm run build 2>&1</span><span class="e"> | </span><span class="c">xplain pipe</span>', d:80},
+      {t:'<span class="d">Detected: Error/Traceback → Analyzing...</span>', d:800},
+      {t:'<span class="o">  Build failed: missing dependency \'react-dom\'.</span>', d:60},
+      {t:'<span class="o">  <span class="g">Fix:</span> npm install react-dom</span>', d:60},
+      {t:'', d:500, blank:true},
+      {t:'<span class="p">$ </span><span class="a">cat utils.py</span><span class="e"> | </span><span class="c">xplain pipe</span>', d:80},
+      {t:'<span class="d">Detected: Python code → Explaining...</span>', d:800},
+      {t:'<span class="o">  This module provides utility functions for string manipulation</span>', d:60},
+      {t:'<span class="o">  and file I/O with proper error handling.</span>', d:60},
+      {t:'', d:300, blank:true},
+      {t:'<span class="d">Heuristic detection · No flags needed</span>', d:0},
+    ]
+  },
+  {
+    title: "5/6 — Model Selection",
+    lines: [
+      {t:'<span class="cm"># 🤖 Choose any AI model from GitHub Marketplace</span>', d:500},
+      {t:'<span class="p">$ </span><span class="c">xplain models</span>', d:80},
+      {t:'<span class="o">  <span class="b">openai/gpt-4.1</span>         GPT-4.1 (default)</span>', d:60},
+      {t:'<span class="o">  <span class="b">openai/gpt-4o</span>          GPT-4o</span>', d:60},
+      {t:'<span class="o">  <span class="b">deepseek/DeepSeek-R1</span>   DeepSeek R1</span>', d:60},
+      {t:'<span class="o">  <span class="b">meta/Llama-4-Scout</span>     Llama 4 Scout</span>', d:60},
+      {t:'', d:400, blank:true},
+      {t:'<span class="p">$ </span><span class="c">xplain</span><span class="f"> --model deepseek/DeepSeek-R1</span><span class="c"> diff</span><span class="a"> HEAD~1</span>', d:80},
+      {t:'<span class="d">3 file(s), +42 additions, -8 deletions</span>', d:800},
+      {t:'<span class="o">  Refactored auth middleware: JWT tokens replace sessions</span>', d:60},
+      {t:'', d:300, blank:true},
+      {t:'<span class="d">Any model · Any command · --model flag</span>', d:0},
+    ]
+  },
+  {
+    title: "6/6 — Shell Integration",
+    lines: [
+      {t:'<span class="cm"># 🐚 Shell integration for power users</span>', d:500},
+      {t:'<span class="p">$ </span><span class="c">source</span><span class="a"> shell/xplain.zsh</span>', d:80},
+      {t:'', d:300, blank:true},
+      {t:'<span class="o">  <span class="b">wtf</span>   → xplain wtf          <span class="d"># explain last failure</span></span>', d:60},
+      {t:'<span class="o">  <span class="b">xc</span>    → xplain cmd          <span class="d"># explain command</span></span>', d:60},
+      {t:'<span class="o">  <span class="b">xe</span>    → xplain error        <span class="d"># explain error</span></span>', d:60},
+      {t:'<span class="o">  <span class="b">xd</span>    → xplain diff         <span class="d"># explain diff</span></span>', d:60},
+      {t:'', d:400, blank:true},
+      {t:'<span class="cm"># Auto command-not-found handler</span>', d:400},
+      {t:'<span class="p">$ </span><span class="a">dockr ps</span>', d:80},
+      {t:'<span class="w">zsh: command not found: dockr</span>', d:400},
+      {t:'<span class="d">💡 Did you mean: docker? Running xplain error...</span>', d:60},
+      {t:'', d:300, blank:true},
+      {t:'<span class="g">🚀 pip install xplain · github.com/anhfactor/xplain-copilot</span>', d:0},
+    ]
+  },
+];
+
+const body = document.getElementById('t');
+const nav = document.getElementById('nav');
+let currentSection = 0;
+
+// Create nav dots
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => showSection(i);
+  nav.appendChild(dot);
+});
+const label = document.createElement('div');
+label.className = 'label';
+label.id = 'nav-label';
+nav.appendChild(label);
+
+function showSection(idx) {
+  currentSection = idx;
+  body.innerHTML = '';
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.className = 'nav-dot' + (i === idx ? ' active' : '');
+  });
+  document.getElementById('nav-label').textContent = sections[idx].title;
+
+  let delay = 200;
+  sections[idx].lines.forEach((l) => {
+    const div = document.createElement('div');
+    div.className = l.blank ? 'line blank' : 'line';
+    div.innerHTML = l.t;
+    body.appendChild(div);
+    setTimeout(() => { div.classList.add('show'); }, delay);
+    delay += l.d + 200;
+  });
+}
+
+// Auto-advance
+let autoTimer;
+function startAuto() {
+  clearInterval(autoTimer);
+  autoTimer = setInterval(() => {
+    showSection((currentSection + 1) % sections.length);
+  }, 8000);
+}
+
+showSection(0);
+startAuto();
+</script>
+</body>
+</html>

@@ -394,6 +394,24 @@ class TestWTFCommand:
                 del os.environ["HISTFILE"]
             os.unlink(tmppath)
 
+    def test_format_as_json(self):
+        """Test JSON output formatter."""
+        import json
+        from src.commands.wtf import _format_as_json
+
+        result = _format_as_json("It failed because...", "git push", 1, "en")
+        data = json.loads(result)
+        assert data["type"] == "wtf_explanation"
+        assert data["command"] == "git push"
+        assert data["exit_code"] == 1
+        assert data["language"] == "en"
+        assert data["explanation"] == "It failed because..."
+
+    def test_wtf_json_flag_in_help(self):
+        """Test --json flag appears in wtf help."""
+        result = runner.invoke(app, ["wtf", "--help"])
+        assert "--json" in result.stdout
+
 
 class TestTLDRMode:
     """Test TL;DR mode."""
