@@ -36,11 +36,13 @@ All commands support `--lang` for multilingual output (English, Vietnamese, Chin
 - **Export** — save any explanation to markdown, JSON, or plain text
 - **Beautiful Terminal UI** — Rich-powered panels, syntax highlighting, loading spinners, and language flags
 
+**GitHub Repository:** [github.com/anhfactor/xplain-copilot](https://github.com/anhfactor/xplain-copilot)
+
 ## Demo
 
 ![xplain cover](assets/cover.png)
 
-### Feature Walkthrough
+### Video Walkthrough
 
 ![xplain demo](assets/demo.gif)
 
@@ -55,36 +57,51 @@ The demo shows xplain in action:
 
 ## My Experience with GitHub Copilot CLI
 
-GitHub Copilot CLI was instrumental throughout the development of xplain:
+I used [GitHub Copilot CLI](https://github.com/github/copilot-cli) (`copilot`) throughout the development of xplain. Here are specific examples of how it shaped the project:
 
-### Architecture & Design
-I used Copilot CLI to explore different approaches for integrating with the GitHub Models API. When the initial `gh api` approach failed with 401 errors (because `gh api` doesn't forward tokens to non-github.com hosts), Copilot helped me quickly iterate on the solution — extracting the token via `gh auth token` and making direct HTTP calls with `httpx`.
+### Building the WTF Command
 
-### Code Generation
-Copilot CLI accelerated the implementation of:
-- The **dual-backend architecture** with abstract base classes and automatic fallback
-- **Content type detection** heuristics for the `pipe` command (error patterns, code indicators)
-- **Git diff parsing** with file stats (additions, deletions, files changed)
-- **Rich terminal formatting** with panels, syntax highlighting, and spinners
-- The **history store** with JSON persistence, search, and pagination
+I launched `copilot` in my project directory and asked:
 
-### Debugging & Problem Solving
-When I hit the GitHub Models API authentication issue, Copilot CLI helped me understand the difference between `gh api` (scoped to api.github.com) and direct API calls to `models.github.ai`. It suggested the `gh auth refresh -s copilot` fix and the `curl`-then-`httpx` migration path.
+> *"Add a wtf command that reads zsh and bash shell history, re-runs the last failed command to capture stderr, and explains the failure with a fix."*
 
-### Testing
-Copilot CLI helped generate comprehensive tests covering:
-- CLI command registration and help output
-- History store CRUD operations
-- Pipe content type detection (error, code, auto, empty)
-- Backend class hierarchy and availability checks
-- Export functionality (markdown, JSON, plain text)
+Copilot CLI scaffolded the entire `src/commands/wtf.py` module — including the zsh extended history format parser (`: timestamp:0;command`), the bash fallback, subprocess re-execution with timeout, and the AI prompt for diagnosing failures. I iterated on the error output formatting and added the "command succeeded this time" happy path.
+
+<!-- Replace with your actual screenshot: -->
+<!-- ![Copilot CLI building wtf command](assets/copilot-wtf-session.png) -->
+
+### Solving the GitHub Models API Authentication
+
+My initial approach used `gh api` to call the Models API, but it returned 401 errors. I asked Copilot CLI:
+
+> *"Why does gh api return 401 when calling models.github.ai? How do I authenticate with the GitHub Models API?"*
+
+It explained that `gh api` only forwards tokens to `api.github.com`, not third-party hosts. It suggested extracting the token via `gh auth token` and making direct HTTP calls with `httpx`. This became the core of `src/core/copilot.py`.
+
+### TL;DR Mode Architecture
+
+I asked Copilot CLI to help design the `--tldr` flag as a global option that affects all commands:
+
+> *"Add a global --tldr flag that switches the AI system prompt to return only a single short sentence instead of detailed explanations."*
+
+It suggested the dual system prompt approach (`SYSTEM_PROMPT` vs `SYSTEM_PROMPT_TLDR`) with a global `_tldr_mode` flag, which was cleaner than modifying every command individually.
+
+### Test Generation
+
+Copilot CLI generated comprehensive tests for the new features:
+
+> *"Write tests for the wtf command's zsh and bash history parsing, the tldr mode toggle, and the shell integration files."*
+
+It created the `TestWTFCommand`, `TestTLDRMode`, and `TestShellIntegration` test classes with proper temp file handling and environment variable cleanup.
 
 The result: **42 tests, all passing**, with good coverage of the core functionality.
 
 ### What Made It Special
-The most impactful aspect was the **speed of iteration**. What would normally take hours of reading docs and Stack Overflow took minutes with Copilot CLI suggesting the right patterns, API calls, and error handling. It felt like pair programming with someone who knows every library.
+
+The most impactful aspect was **agentic iteration**. Instead of context-switching between docs, Stack Overflow, and my editor, I stayed in the terminal and had Copilot CLI plan and execute complex tasks — from scaffolding new commands to debugging API authentication to writing tests. It felt like pair programming with someone who knows every library and can actually edit the files.
 
 ---
 
-Built with Python, Typer, Rich, and the GitHub Models API.
+Built with Python, Typer, Rich, and the GitHub Models API.  
+**GitHub Repository:** [github.com/anhfactor/xplain-copilot](https://github.com/anhfactor/xplain-copilot)
 
