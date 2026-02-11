@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xplain — Cover Screenshot</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@600;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .card {
+    width: 1200px;
+    background: #0d1117;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 60px rgba(88,166,255,0.08);
+    border: 1px solid #30363d;
+  }
+
+  /* Header bar */
+  .header {
+    background: linear-gradient(90deg, #161b22, #1c2128);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #30363d;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .dots {
+    display: flex;
+    gap: 8px;
+  }
+  .dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+  }
+  .dot.red { background: #ff5f57; }
+  .dot.yellow { background: #febc2e; }
+  .dot.green { background: #28c840; }
+  .tab {
+    background: #0d1117;
+    color: #8b949e;
+    padding: 6px 16px;
+    border-radius: 8px 8px 0 0;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid #30363d;
+    border-bottom: none;
+  }
+  .badge {
+    background: linear-gradient(135deg, #238636, #2ea043);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Main content */
+  .content {
+    padding: 40px;
+  }
+
+  /* Title section */
+  .title-section {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 56px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #58a6ff, #79c0ff, #a5d6ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: #8b949e;
+    font-size: 18px;
+    font-weight: 400;
+  }
+  .subtitle em {
+    color: #58a6ff;
+    font-style: normal;
+  }
+
+  /* Terminal block */
+  .terminal {
+    background: #010409;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    overflow: hidden;
+  }
+  .line { white-space: nowrap; }
+  .prompt { color: #3fb950; }
+  .cmd { color: #79c0ff; }
+  .arg { color: #ffa657; }
+  .str { color: #a5d6a7; }
+  .flag { color: #d2a8ff; }
+  .comment { color: #484f58; font-style: italic; }
+  .pipe-char { color: #ff7b72; font-weight: bold; }
+  .output { color: #8b949e; white-space: nowrap; }
+  .output-highlight { color: #58a6ff; }
+  .blank { height: 8px; }
+
+  /* Feature pills */
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    background: #161b22;
+    color: #c9d1d9;
+  }
+  .pill .icon { font-size: 16px; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #21262d;
+    color: #484f58;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .footer a {
+    color: #58a6ff;
+    text-decoration: none;
+  }
+  .powered {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <!-- Header bar -->
+  <div class="header">
+    <div class="header-left">
+      <div class="dots">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+      <div class="tab">~/projects &mdash; zsh</div>
+    </div>
+    <div class="badge">GitHub Copilot CLI Challenge</div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- Title -->
+    <div class="title-section">
+      <div class="logo">xplain</div>
+      <div class="subtitle">AI-Powered CLI to Explain Code, Commands & Errors<br>Powered by <em>GitHub Models API</em></div>
+    </div>
+
+    <!-- Terminal demo -->
+    <div class="terminal">
+      <div class="line"><span class="comment"># Explain a complex git command</span></div>
+      <div class="line">
+        <span class="prompt">$ </span>
+        <span class="cmd">xplain cmd</span>
+        <span class="str"> "git rebase -i HEAD~3 --autosquash"</span>
+        <span class="flag"> --lang vi</span>
+      </div>
+      <div class="output">
+        <span class="output-highlight">&#x1F1FB;&#x1F1F3;</span> Analyzing command...
+      </div>
+      <div class="blank"></div>
+
+      <div class="line"><span class="comment"># Diagnose errors instantly</span></div>
+      <div class="line">
+        <span class="prompt">$ </span>
+        <span class="cmd">xplain error</span>
+        <span class="str"> "TypeError: Cannot read property 'map' of undefined"</span>
+      </div>
+      <div class="blank"></div>
+
+      <div class="line"><span class="comment"># Pipe build output directly</span></div>
+      <div class="line">
+        <span class="prompt">$ </span>
+        <span class="arg">npm run build</span>
+        <span class="pipe-char"> | </span>
+        <span class="cmd">xplain pipe</span>
+      </div>
+      <div class="blank"></div>
+
+      <div class="line"><span class="comment"># Choose any AI model from GitHub Marketplace</span></div>
+      <div class="line">
+        <span class="prompt">$ </span>
+        <span class="cmd">xplain</span>
+        <span class="flag"> --model openai/gpt-4.1</span>
+        <span class="cmd"> diff</span>
+        <span class="arg"> HEAD~1</span>
+      </div>
+    </div>
+
+    <!-- Feature pills -->
+    <div class="features">
+      <div class="pill"><span class="icon">&#x1F50D;</span> Commands</div>
+      <div class="pill"><span class="icon">&#x1F41B;</span> Errors</div>
+      <div class="pill"><span class="icon">&#x1F4D6;</span> Code</div>
+      <div class="pill"><span class="icon">&#x1F500;</span> Git Diffs</div>
+      <div class="pill"><span class="icon">&#x1F517;</span> Smart Pipe</div>
+      <div class="pill"><span class="icon">&#x1F4AC;</span> Chat</div>
+      <div class="pill"><span class="icon">&#x1F916;</span> Model Selection</div>
+      <div class="pill"><span class="icon">&#x1F30D;</span> 10+ Languages</div>
+      <div class="pill"><span class="icon">&#x1F4DC;</span> History</div>
+      <div class="pill"><span class="icon">&#x1F4E4;</span> Export</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="powered">Built with Python &bull; Typer &bull; Rich &bull; GitHub Models API</span>
+  </div>
+</div>
+
+</body>
+</html>

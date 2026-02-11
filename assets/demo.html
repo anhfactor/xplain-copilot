@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>xplain demo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0d1117; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+  .term {
+    width:880px; background:#0d1117; border-radius:12px; overflow:hidden;
+    border:1px solid #30363d; box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+  .bar {
+    background:#161b22; padding:10px 16px; display:flex; align-items:center; gap:8px;
+    border-bottom:1px solid #30363d;
+  }
+  .dot { width:12px; height:12px; border-radius:50%; }
+  .dr { background:#ff5f57; } .dy { background:#febc2e; } .dg { background:#28c840; }
+  .bar span { color:#8b949e; font:12px 'JetBrains Mono',monospace; margin-left:12px; }
+  .body { padding:20px 24px; font:14px/1.9 'JetBrains Mono',monospace; min-height:520px; }
+  .line { white-space:pre; opacity:0; transform:translateY(3px); transition:opacity .3s, transform .3s; }
+  .line.show { opacity:1; transform:translateY(0); }
+  .p { color:#3fb950; } .c { color:#79c0ff; } .a { color:#ffa657; }
+  .s { color:#a5d6a7; } .f { color:#d2a8ff; } .cm { color:#484f58; font-style:italic; }
+  .o { color:#c9d1d9; } .d { color:#8b949e; } .h { color:#58a6ff; }
+  .e { color:#ff7b72; } .g { color:#3fb950; font-weight:bold; }
+  .blank { height:12px; }
+  .cursor { display:inline-block; width:8px; height:16px; background:#c9d1d9; animation:blink 1s step-end infinite; vertical-align:text-bottom; margin-left:2px; }
+  @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+</style>
+</head>
+<body>
+<div class="term">
+  <div class="bar">
+    <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+    <span>~/projects — zsh</span>
+  </div>
+  <div class="body" id="t"></div>
+</div>
+<script>
+const lines = [
+  {t:'<span class="cm"># 🔍 Explain shell commands in any language</span>', d:600},
+  {t:'<span class="p">$ </span><span class="c">xplain cmd</span><span class="s"> "git rebase -i HEAD~3"</span><span class="f"> --lang vi</span>', d:80},
+  {t:'<span class="d">🇻🇳 Analyzing command...</span>', d:800},
+  {t:'<span class="g">✓ git rebase -i HEAD~3</span>', d:400},
+  {t:'<span class="o">  Lệnh này khởi động interactive rebase cho 3 commit gần nhất</span>', d:60},
+  {t:'<span class="o">  • -i: Chế độ tương tác — sắp xếp, squash, edit commit</span>', d:60},
+  {t:'<span class="o">  • HEAD~3: 3 commit gần nhất từ HEAD</span>', d:60},
+  {t:'', d:500, blank:true},
+
+  {t:'<span class="cm"># 🐛 Diagnose errors instantly</span>', d:600},
+  {t:'<span class="p">$ </span><span class="c">xplain error</span><span class="s"> "TypeError: Cannot read property \'map\' of undefined"</span>', d:80},
+  {t:'<span class="d">🇺🇸 Diagnosing error...</span>', d:800},
+  {t:'<span class="e">✗ TypeError: Cannot read property \'map\' of undefined</span>', d:400},
+  {t:'<span class="o">  Calling .map() on undefined. Add null check: arr?.map()</span>', d:60},
+  {t:'', d:500, blank:true},
+
+  {t:'<span class="cm"># 🔗 Smart pipe — auto-detect errors, code, or logs</span>', d:600},
+  {t:'<span class="p">$ </span><span class="a">npm run build 2>&1</span><span class="e"> | </span><span class="c">xplain pipe</span>', d:80},
+  {t:'<span class="d">Detected: Error/Traceback → Analyzing...</span>', d:800},
+  {t:'<span class="o">  Build failed: missing dependency \'react-dom\'. Run: npm i react-dom</span>', d:60},
+  {t:'', d:500, blank:true},
+
+  {t:'<span class="cm"># 🤖 Choose any AI model from GitHub Marketplace</span>', d:600},
+  {t:'<span class="p">$ </span><span class="c">xplain</span><span class="f"> --model deepseek/DeepSeek-R1</span><span class="c"> diff</span><span class="a"> HEAD~1</span>', d:80},
+  {t:'<span class="d">3 file(s), +42 additions, -8 deletions</span>', d:800},
+  {t:'<span class="o">  Refactored auth middleware: JWT tokens replace sessions</span>', d:60},
+  {t:'', d:500, blank:true},
+
+  {t:'<span class="cm"># ✨ And more...</span>', d:600},
+  {t:'<span class="p">$ </span><span class="c">xplain code</span><span class="a"> ./utils.py</span><span class="f"> -o explanation.md</span><span class="d">    # explain + export</span>', d:80},
+  {t:'<span class="p">$ </span><span class="c">xplain chat</span><span class="f"> --lang ja</span><span class="d">                      # interactive chat 🇯🇵</span>', d:80},
+  {t:'<span class="p">$ </span><span class="c">xplain history</span><span class="f"> --search "docker"</span><span class="d">        # search history</span>', d:80},
+  {t:'<span class="p">$ </span><span class="c">xplain models</span><span class="d">                              # list AI models</span>', d:80},
+  {t:'', d:400, blank:true},
+  {t:'<span class="g">🚀 Powered by GitHub Models API — pip install xplain</span>', d:0},
+];
+
+const body = document.getElementById('t');
+let delay = 300;
+
+lines.forEach((l) => {
+  const div = document.createElement('div');
+  div.className = l.blank ? 'line blank' : 'line';
+  div.innerHTML = l.t;
+  body.appendChild(div);
+
+  setTimeout(() => { div.classList.add('show'); }, delay);
+  delay += l.d + 300;
+});
+</script>
+</body>
+</html>
